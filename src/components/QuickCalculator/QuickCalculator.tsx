@@ -17,7 +17,6 @@ const PRESETS = [5, 10, 15, 20, 25, 30, 45, 50, 60, 80, 100, 120];
 
 export function QuickCalculator() {
   const { state, dispatch, lookup, options } = useDateContext();
-  // segurar +/− avança os dias em sequência (e as folhas passam uma atrás da outra)
   const minus = useAutoRepeat(() => dispatch({ type: 'stepDays', delta: -1 }));
   const plus = useAutoRepeat(() => dispatch({ type: 'stepDays', delta: 1 }));
   const start = parseISODate(state.startDate) ?? new Date();
@@ -36,7 +35,6 @@ export function QuickCalculator() {
 
   const shownDate = deadline ? deadline.end : interval!.end;
 
-  // clique no mini-calendário: o prazo passa a vencer no dia clicado
   const pickDay = (d: Date) => {
     if (state.mode === 'entre') {
       dispatch({ type: 'setEndDate', value: toISODate(d) });
@@ -52,6 +50,15 @@ export function QuickCalculator() {
   };
   const shownHoliday = lookup(shownDate);
   const unit = state.mode === 'uteis' ? 'úteis' : 'corridos';
+
+  const calendarEquiv = useMemo(
+    () =>
+      state.mode === 'uteis' && deadline
+        ? countBetween(deadline.start, deadline.end, lookup, options).calendarDays
+        : null,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [state.mode, deadline?.start, deadline?.end, lookup, options],
+  );
 
   return (
     <section className="panel quick" aria-labelledby="quick-title">
@@ -80,15 +87,7 @@ export function QuickCalculator() {
             <div className="field">
               <label htmlFor="days-input">Prazo em dias {unit}</label>
               <div className="stepper">
-                <button
-                  type="button"
-                  className="key3d"
-                  aria-label="Diminuir um dia"
-                  title="Segure para repetir"
-                  {...minus}
-                >
-                  −
-                </button>
+                <button type="button" className="key3d" aria-label="Diminuir um dia" title="Segure para repetir" {...minus}>−</button>
                 <input
                   id="days-input"
                   type="number"
@@ -98,26 +97,12 @@ export function QuickCalculator() {
                   value={state.days}
                   onChange={(e) => dispatch({ type: 'setDays', value: Number(e.target.value) })}
                 />
-                <button
-                  type="button"
-                  className="key3d"
-                  aria-label="Aumentar um dia"
-                  title="Segure para repetir"
-                  {...plus}
-                >
-                  +
-                </button>
+                <button type="button" className="key3d" aria-label="Aumentar um dia" title="Segure para repetir" {...plus}>+</button>
               </div>
             </div>
             <div className="presets" role="group" aria-label="Prazos comuns">
               {PRESETS.map((p) => (
-                <button
-                  key={p}
-                  type="button"
-                  className="key3d chip"
-                  aria-pressed={state.days === p}
-                  onClick={() => dispatch({ type: 'setDays', value: p })}
-                >
+                <button key={p} type="button" className="key3d chip" aria-pressed={state.days === p} onClick={() => dispatch({ type: 'setDays', value: p })}>
                   {p}
                 </button>
               ))}
@@ -142,6 +127,9 @@ export function QuickCalculator() {
           <div className="result" aria-live="polite">
             <p className="result-eyebrow">
               {formatDateBR(start)} + {plural(deadline.days, state.mode === 'uteis' ? 'dia útil' : 'dia corrido', `dias ${unit}`)}
+              {calendarEquiv !== null && (
+                <span className="result-equiv"> · Total de {plural(calendarEquiv, 'dia corrido', 'dias corridos')}</span>
+              )}
             </p>
             <p className="result-headline" data-testid="result-date">
               Vence em <strong>{formatLong(deadline.end)}</strong>
@@ -159,9 +147,7 @@ export function QuickCalculator() {
               </li>
               <li className={`fact${deadline.holidaysInPath.length ? ' fact-red' : ''}`}>
                 {deadline.holidaysInPath.length
-                  ? `${plural(deadline.holidaysInPath.length, 'feriado', 'feriados')}: ${deadline.holidaysInPath
-                      .map((h) => `${h.name} (${formatShort(h.date)})`)
-                      .join(', ')}`
+                  ? `${plural(deadline.holidaysInPath.length, 'feriado', 'feriados')}: ${deadline.holidaysInPath.map((h) => `${h.name} (${formatShort(h.date)})`).join(', ')}`
                   : 'Nenhum feriado no caminho'}
               </li>
             </ul>
@@ -176,15 +162,11 @@ export function QuickCalculator() {
             </p>
             <div className="big-counts">
               <div>
-                <span className="big-num" data-testid="count-corridos">
-                  {interval.calendarDays}
-                </span>
+                <span className="big-num" data-testid="count-corridos">{interval.calendarDays}</span>
                 <span className="big-label">dias corridos</span>
               </div>
               <div>
-                <span className="big-num is-pen" data-testid="count-uteis">
-                  {interval.businessDays}
-                </span>
+                <span className="big-num is-pen" data-testid="count-uteis">{interval.businessDays}</span>
                 <span className="big-label">dias úteis</span>
               </div>
             </div>
@@ -192,9 +174,7 @@ export function QuickCalculator() {
               <li className="fact">{plural(interval.weekendDays, 'dia de fim de semana', 'dias de fim de semana')}</li>
               <li className={`fact${interval.holidays.length ? ' fact-red' : ''}`}>
                 {interval.holidays.length
-                  ? `${plural(interval.holidays.length, 'feriado', 'feriados')}: ${interval.holidays
-                      .map((h) => `${h.name} (${formatShort(h.date)})`)
-                      .join(', ')}`
+                  ? `${plural(interval.holidays.length, 'feriado', 'feriados')}: ${interval.holidays.map((h) => `${h.name} (${formatShort(h.date)})`).join(', ')}`
                   : 'Nenhum feriado no intervalo'}
               </li>
             </ul>

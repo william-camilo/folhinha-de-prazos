@@ -733,6 +733,11 @@ input:focus-visible {
   color: var(--muted);
   font-variant-numeric: tabular-nums;
 }
+.result-equiv {
+  font-weight: 400;
+  color: var(--muted-2);
+  margin-left: 2px;
+}
 
 .result-headline {
   font-size: clamp(19px, 2.2vw, 24px);
@@ -1576,4 +1581,173 @@ td.weekday {
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
   }
+}
+
+/* =========================================================
+   BirthdayWidget
+   ========================================================= */
+
+.bday-widget {
+  position: relative;
+}
+
+/* Botão principal */
+.bday-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1.5px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 13px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+  white-space: nowrap;
+}
+.bday-btn:hover { background: var(--surface-2); }
+
+.bday-icon { font-size: 16px; line-height: 1; }
+
+.bday-preview { display: flex; flex-direction: column; line-height: 1.2; }
+.bday-preview-name { font-weight: 600; font-size: 12px; }
+.bday-preview-when { font-size: 11px; color: var(--muted); }
+
+/* Urgências — colore a borda do botão */
+.bday-widget-u30  .bday-btn { border-color: var(--pen); }
+.bday-widget-u7   .bday-btn { border-color: #f9a825; box-shadow: 0 0 0 2px #f9a82533; }
+.bday-widget-u1   .bday-btn { border-color: #e65100; box-shadow: 0 0 0 2px #e6510033; }
+.bday-widget-u0   .bday-btn {
+  border-color: #d3263a;
+  box-shadow: 0 0 0 3px #d3263a44;
+  animation: bday-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes bday-pulse {
+  0%, 100% { box-shadow: 0 0 0 3px #d3263a44; }
+  50%       { box-shadow: 0 0 0 7px #d3263a11; }
+}
+
+/* Modal dropdown */
+.bday-modal {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 320px;
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.18);
+  z-index: 200;
+  overflow: hidden;
+}
+
+.bday-modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px 10px;
+  border-bottom: 1px solid var(--line);
+  font-size: 14px;
+}
+
+.bday-close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: var(--muted);
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 2px;
+}
+.bday-close:hover { color: var(--ink); }
+
+/* Formulário */
+.bday-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+}
+.bday-input {
+  flex: 1 1 120px;
+  padding: 7px 9px;
+  border: 1.5px solid var(--line);
+  border-radius: 7px;
+  background: var(--surface-2);
+  color: var(--ink);
+  font-size: 13px;
+}
+.bday-input:focus { outline: none; border-color: var(--pen); }
+.bday-add-btn { flex: 0 0 auto; padding: 7px 14px; font-size: 13px; }
+.bday-error { flex: 0 0 100%; font-size: 12px; color: var(--red); margin: 0; }
+
+/* Lista */
+.bday-list {
+  list-style: none;
+  margin: 0;
+  padding: 6px 0;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.bday-empty {
+  padding: 12px 14px;
+  font-size: 13px;
+  color: var(--muted);
+  text-align: center;
+  margin: 0;
+}
+
+.bday-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-left: 3px solid transparent;
+  transition: background 0.15s;
+}
+.bday-row:hover { background: var(--surface-2); }
+
+/* Urgências na lista */
+.bday-row.bday-u999 { border-left-color: var(--line); }
+.bday-row.bday-u30  { border-left-color: var(--pen); }
+.bday-row.bday-u7   { border-left-color: #f9a825; background: #f9a82508; }
+.bday-row.bday-u1   { border-left-color: #e65100; background: #e6510010; }
+.bday-row.bday-u0   { border-left-color: #d3263a; background: #d3263a10; }
+
+.bday-name  { font-size: 13px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bday-date  { font-size: 12px; color: var(--muted); white-space: nowrap; }
+.bday-when  { font-size: 12px; color: var(--muted-2); white-space: nowrap; }
+.bday-remove {
+  background: none; border: none; color: var(--muted-2); cursor: pointer;
+  font-size: 16px; line-height: 1; padding: 0 2px;
+}
+.bday-remove:hover { color: var(--red); }
+
+/* Tema escuro */
+[data-theme="dark"] .bday-modal,
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .bday-modal {
+    box-shadow: 0 8px 32px rgba(0,0,0,.45);
+  }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .bday-modal {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    border-radius: 16px 16px 0 0;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  .bday-preview { display: none; }
 }

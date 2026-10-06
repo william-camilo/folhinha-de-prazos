@@ -5,6 +5,7 @@ import { useInstallPrompt } from '../../hooks/useInstallPrompt';
 import { useOnline } from '../../hooks/useOnline';
 import { useHolidays } from '../../hooks/useHolidays';
 import { parseISODate } from '../../utils/format';
+import { BirthdayWidget } from '../BirthdayWidget/BirthdayWidget';
 
 const THEMES: { value: ThemeChoice; label: string; icon: ReactNode }[] = [
   {
@@ -54,7 +55,6 @@ export function Header() {
     <header className="app-header">
       <div className="brand">
         <span className="brand-mark" aria-hidden="true">
-          {/* mini folhinha: mesma cara da folha 3D da calculadora */}
           <span className="brand-sheet">
             <span className="brand-rings">
               <i />
@@ -72,6 +72,7 @@ export function Header() {
 
       <div className="header-actions">
         {!online && <span className="pill pill-amber" role="status">Offline</span>}
+        <BirthdayWidget />
         <button type="button" className="btn btn-ghost" onClick={() => dispatch({ type: 'openHolidays' })}>
           <svg viewBox="0 0 20 20" aria-hidden="true" className="btn-icon">
             <rect x="3" y="4.5" width="14" height="12.5" rx="2" fill="none" stroke="currentColor" strokeWidth="1.6" />
