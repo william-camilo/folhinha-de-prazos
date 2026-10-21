@@ -56,7 +56,8 @@ body::after { content: ''; position: absolute; inset: 0 0 auto; height: 1100px; 
 .calendar-material { display: block; width: 100%; height: auto; pointer-events: none; user-select: none; }
 .paper-product>.calendar-material:first-child, .mechanical-calendar>.calendar-material { filter: drop-shadow(12px 23px 15px #32200e48); }
 .paper-hardware { position: absolute; inset: 0; clip-path: inset(0 0 81.5%); pointer-events: none; }
-.folhinha { position: absolute; top: 12%; left: 8%; width: 80.7%; height: 75.2%; aspect-ratio: auto; transform: skewX(-2.6deg); transition: none; }
+/* A folha inteira deve passar à frente da fotografia das argolas durante a subida. */
+.folhinha { position: absolute; z-index: 1; top: 12%; left: 8%; width: 80.7%; height: 75.2%; aspect-ratio: auto; transform: skewX(-2.6deg); transition: none; }
 .page { background: transparent; border-radius: 1px; box-shadow: none; color: #10264f; }
 .page-current::after { display: none; }
 .page-band { height: 23.6%; padding-top: 5cqw; font: 750 3.6cqw var(--body); letter-spacing: .12em; background: transparent; }
