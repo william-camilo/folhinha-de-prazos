@@ -2,7 +2,7 @@
 import { useMemo } from 'react';
 import { useDateContext, type CalcMode } from '../../context/DateContext';
 import { calculateDeadline, countBetween } from '../../utils/calculator';
-import { formatDateBR, formatLong, formatShort, getDayOfWeekShort, parseISODate, plural, toISODate } from '../../utils/format';
+import { formatDateBR, formatLong, formatShort, getDayOfWeekName, getDayOfWeekShort, parseISODate, plural, toISODate } from '../../utils/format';
 import { CalendarDisplay } from '../Folhinha3D/CalendarDisplay';
 import { DayTimeline } from '../DayTimeline/DayTimeline';
 import { useAutoRepeat } from '../../hooks/useAutoRepeat';
@@ -132,7 +132,8 @@ export function QuickCalculator() {
               )}
             </p>
             <p className="result-headline" data-testid="result-date">
-              Vence em <strong>{formatLong(deadline.end)}</strong>
+              Vence em {getDayOfWeekName(deadline.end)},
+              <strong>{formatLong(deadline.end).split(', ').slice(1).join(', ')}</strong>
             </p>
             <ul className="facts">
               {deadline.extended && (
@@ -193,7 +194,20 @@ export function QuickCalculator() {
         />
       </div>
 
-      <div className="quick-timeline">
+      <div className="quick-overview">
+        <div id="birthday-overview" className="overview-card birthday-overview" />
+        <section className="overview-card deadline-overview" aria-label="Linha do prazo">
+          <h2><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4v4m12-4v4M4 10h16M5 6h14v14H5zM8 14h3m2 3h3" /></svg>Linha do prazo</h2>
+          <div className="deadline-track">
+            <div><strong>{formatShort(deadline ? deadline.start : interval!.start)} {(deadline ? deadline.start : interval!.start).getFullYear()}</strong><small>Data inicial</small></div>
+            <div className="deadline-track-line"><span>{deadline ? `${deadline.days} dias ${unit}` : `${interval!.businessDays} dias úteis`}</span><i /><small>{calendarEquiv ?? interval?.calendarDays ?? deadline?.steps.length} dias corridos</small></div>
+            <div><strong>{formatShort(shownDate)} {shownDate.getFullYear()}</strong><small>Vencimento</small></div>
+          </div>
+        </section>
+      </div>
+
+      <details className="quick-timeline">
+        <summary><span>Contagem dia a dia</span><span className="timeline-summary-hint">Veja os dias contados e os feriados</span></summary>
         <DayTimeline
           start={deadline ? deadline.start : interval!.start}
           end={shownDate}
@@ -204,7 +218,7 @@ export function QuickCalculator() {
           onPick={pickDay}
           isPickable={canPick}
         />
-      </div>
+      </details>
     </section>
   );
 }

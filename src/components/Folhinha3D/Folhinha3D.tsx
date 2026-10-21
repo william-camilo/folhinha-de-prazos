@@ -1,8 +1,7 @@
 // src/components/Folhinha3D/Folhinha3D.tsx
-// "Folhinha" de mesa em 3D: um bloco de folhas com espessura real (camadas em
-// translateZ), argolas, inclinação que segue o ponteiro e a folha de cima que
-// é arrancada quando a data muda.
-import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
+// Base fotográfica com texto vivo e folha que se desprende ao mudar a data.
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import paperModel from '../../assets/paper-model.webp';
 import { useTilt } from '../../hooks/useTilt';
 import { getDayOfWeekName, getMonthName } from '../../utils/format';
 import { dateKey } from '../../utils/holidays';
@@ -30,17 +29,14 @@ function Page({ date, caption, sub, redDay, holidayName }: PageProps) {
         </span>
         {holidayName ? <span className="page-note is-red">{holidayName}</span> : sub && <span className="page-note">{sub}</span>}
       </div>
-      <div className="page-perforation" aria-hidden="true" />
     </>
   );
 }
 
 export type Folhinha3DProps = PageProps & { label: string };
 
-const SHEETS = 7;
-
 export function Folhinha3D(props: Folhinha3DProps) {
-  const stageRef = useTilt<HTMLDivElement>(6);
+  const stageRef = useTilt<HTMLDivElement>(3);
   const key = dateKey(props.date);
   const prev = useRef<{ key: string; props: PageProps } | null>(null);
   // folhas saindo (até 3 ao mesmo tempo quando a data muda rápido)
@@ -78,14 +74,11 @@ export function Folhinha3D(props: Folhinha3DProps) {
 
   return (
     <div className="folhinha-stage" ref={stageRef} role="img" aria-label={props.label}>
+      <div className="paper-product">
+      <img className="calendar-material" src={paperModel} width="1024" height="1024" alt="" draggable={false} />
       <div className="folhinha">
-        <div className="desk-stand" aria-hidden="true" />
-        {Array.from({ length: SHEETS }, (_, i) => (
-          <div key={i} className="sheet" style={{ '--i': i + 1 } as CSSProperties} aria-hidden="true" />
-        ))}
         <div className="page page-current" aria-hidden="true">
           <Page {...props} />
-          <div className="page-gloss" />
         </div>
         {/* a mais antiga por cima: foi arrancada primeiro */}
         {[...leaving].reverse().map((l) => (
@@ -93,13 +86,9 @@ export function Folhinha3D(props: Folhinha3DProps) {
             <Page {...l.props} />
           </PageCurl>
         ))}
-        <div className="binding" aria-hidden="true">
-          <span className="ring" />
-          <span className="ring" />
-          <span className="ring" />
-        </div>
       </div>
-      <div className="folhinha-shadow" aria-hidden="true" />
+      <img className="calendar-material paper-hardware" src={paperModel} width="1024" height="1024" alt="" draggable={false} />
+      </div>
     </div>
   );
 }

@@ -1,5 +1,6 @@
 // src/components/BirthdayWidget/BirthdayWidget.tsx
 import { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useBirthdays, daysUntilBirthday, type Birthday } from '../../hooks/useBirthdays';
 import { Confetti } from './Confetti';
 
@@ -31,7 +32,11 @@ export function BirthdayWidget() {
   const modalRef = useRef<HTMLDialogElement>(null);
   const nameRef = useRef<HTMLInputElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const returnFocus = useRef<HTMLButtonElement | null>(null);
+  const [overview, setOverview] = useState<HTMLElement | null>(null);
   const isToday = next !== null && daysUntilBirthday(next.monthDay) === 0;
+
+  useEffect(() => { setOverview(document.getElementById('birthday-overview')); }, []);
 
   useEffect(() => {
     const dialog = modalRef.current;
@@ -64,14 +69,21 @@ export function BirthdayWidget() {
 
   return <>
     <Confetti active={isToday} />
-    <button ref={triggerRef} type="button" className="btn birthday-trigger" onClick={() => setOpen(true)}
+    <button ref={triggerRef} type="button" className="btn birthday-trigger" onClick={e => { returnFocus.current = e.currentTarget; setOpen(true); }}
       aria-haspopup="dialog" aria-expanded={open}>
       <CakeIcon /><span>Adicionar aniversariante</span><span aria-hidden="true">+</span>
       {isToday && <span className="birthday-today-dot" title="Há aniversariante hoje" />}
     </button>
+    {overview && createPortal(<>
+      <h2><CakeIcon />Próximos aniversários</h2>
+      {next ? <div className="birthday-overview-person"><span className="birthday-avatar" aria-hidden="true">{next.name.trim().charAt(0)}</span><div><strong>{next.name}</strong><small>{next.monthDay.split('-').reverse().join('/')} · {isToday ? 'Hoje!' : `Em ${daysUntilBirthday(next.monthDay)} dias`}</small></div></div> :
+        <p className="birthday-overview-empty">Guarde as datas de quem importa.<br />Seus próximos aniversários aparecem aqui.</p>}
+      <button type="button" className="btn btn-primary birthday-overview-add" aria-haspopup="dialog" aria-expanded={open}
+        onClick={e => { returnFocus.current = e.currentTarget; setOpen(true); }}><span aria-hidden="true">+</span> Adicionar aniversariante</button>
+    </>, overview)}
     <dialog ref={modalRef} className="modal birthday-dialog" aria-labelledby="birthday-title"
       onCancel={() => setOpen(false)}
-      onClose={() => { setOpen(false); triggerRef.current?.focus(); }}
+      onClose={() => { setOpen(false); (returnFocus.current ?? triggerRef.current)?.focus(); }}
       onClick={e => { if (e.target === modalRef.current) setOpen(false); }}>
       <div className="modal-card birthday-card">
         <div className="birthday-heading">

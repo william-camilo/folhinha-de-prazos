@@ -2,6 +2,7 @@ import { useLayoutEffect, useRef, useState } from 'react';
 import { getDayOfWeekName, getMonthName } from '../../utils/format';
 import { useTilt } from '../../hooks/useTilt';
 import type { Folhinha3DProps } from './Folhinha3D';
+import mechanicalModel from '../../assets/mechanical-model.webp';
 
 function Flap({ value, className = '' }: { value: string; className?: string }) {
   const previous = useRef(value);
@@ -36,12 +37,12 @@ function Flap({ value, className = '' }: { value: string; className?: string }) 
 }
 
 export function MechanicalCalendar(props: Folhinha3DProps) {
-  const stageRef = useTilt<HTMLDivElement>(5);
+  const stageRef = useTilt<HTMLDivElement>(3);
   const digits = String(props.date.getDate()).padStart(2, '0');
   return (
     <div className="mechanical-stage" ref={stageRef} role="img" aria-label={props.label}>
       <div className="mechanical-calendar">
-        <div className="mechanical-label" aria-hidden="true">{props.caption}</div>
+        <img className="calendar-material" src={mechanicalModel} width="1024" height="1024" alt="" draggable={false} />
         <Flap value={getDayOfWeekName(props.date).toLocaleUpperCase('pt-BR')} className="flip-weekday" />
         <div className={`mechanical-digits${props.redDay ? ' is-red' : ''}`}>
           <Flap value={digits[0]} /><Flap value={digits[1]} />
@@ -51,8 +52,6 @@ export function MechanicalCalendar(props: Folhinha3DProps) {
           <Flap value={String(props.date.getFullYear())} className="flip-year" />
         </div>
         <p className="mechanical-note" aria-hidden="true">{props.holidayName || props.sub}</p>
-        <span className="mechanical-foot foot-left" aria-hidden="true" />
-        <span className="mechanical-foot foot-right" aria-hidden="true" />
       </div>
     </div>
   );

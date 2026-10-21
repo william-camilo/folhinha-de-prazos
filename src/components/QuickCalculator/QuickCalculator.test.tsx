@@ -53,6 +53,7 @@ describe('<QuickCalculator />', () => {
   it('clicar num dia do calendário ajusta o prazo', async () => {
     setup();
     const user = userEvent.setup();
+    await user.click(screen.getByText('Contagem dia a dia'));
     await user.click(screen.getByRole('button', { name: /^20\/10\/2026.*Definir como vencimento/ }));
     expect(screen.getByLabelText(/Prazo em dias/)).toHaveValue(19); // 12/10 é feriado
     expect(screen.getByTestId('result-date')).toHaveTextContent('20 de outubro de 2026');
