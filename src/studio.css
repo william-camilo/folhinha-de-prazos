@@ -22,7 +22,7 @@ body::after { content: ''; position: absolute; inset: 0 0 auto; height: 1100px; 
 .start-field input { max-width: 175px; font-family: var(--body); font-size: 16px; }
 .date-row .btn { background: var(--pen-soft); color: var(--pen); }
 .toggles { padding: 0 0 0 24px; border-left: 1px solid var(--line); gap: 16px; align-items: center; }
-.toggle-hint { font-size: 10px; line-height: 1.35; }
+.toggle-hint { font-size: 12px; line-height: 1.45; }
 .layout { gap: 22px; }
 .quick { grid-template-columns: minmax(0, .94fr) minmax(0, 1.06fr); grid-template-areas: 'main visual' 'overview overview' 'timeline timeline'; gap: 20px 28px; align-items: stretch; }
 .quick-main { padding: 26px; gap: 23px; border-color: #ffffff66; box-shadow: 0 5px 24px #4b351410; }
@@ -32,7 +32,7 @@ body::after { content: ''; position: absolute; inset: 0 0 auto; height: 1100px; 
 .tab[aria-selected='true'] { border-color: var(--pen); }
 .quick-inputs { grid-template-columns: 1fr; gap: 17px; }
 .quick-inputs>.field { justify-items: center; gap: 8px; }
-.quick-inputs>.field>label { font-size: 11px; color: var(--muted); }
+.quick-inputs>.field>label { font-size: 13px; color: var(--muted); }
 .stepper { gap: 20px; width: 270px; padding: 0; border: 0; }
 .stepper input { font: 750 64px/1 var(--body); height: 72px; letter-spacing: -.055em; }
 .stepper .key3d { width: 53px; height: 53px; font-size: 28px; font-weight: 400; border: 1px solid var(--line-strong); }
@@ -41,7 +41,7 @@ body::after { content: ''; position: absolute; inset: 0 0 auto; height: 1100px; 
 .result-eyebrow { font-size: 13px; font-weight: 400; text-align: center; }
 .result-headline { text-align: center; font-size: 20px; padding: 7px 0; }
 .result-headline strong { font-size: clamp(28px, 2.8vw, 41px); line-height: 1.15; letter-spacing: -.045em; margin-top: 6px; }
-.fact { font-size: 12px; line-height: 1.5; }
+.fact { font-size: 14px; line-height: 1.5; }
 .calendar-display { display: flex; flex-direction: column; gap: 0; }
 .calendar-toolbar { justify-content: center; }
 .calendar-eyebrow { display: none; }
@@ -88,8 +88,8 @@ body::after { content: ''; position: absolute; inset: 0 0 auto; height: 1100px; 
 .overview-card h2 svg { width: 23px; height: 23px; fill: none; stroke: currentColor; stroke-width: 1.7; }
 .birthday-overview { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; }
 .birthday-overview h2 { grid-column: 1 / -1; }
-.birthday-overview-empty { color: var(--muted); font-size: 12px; }
-.birthday-overview-add { font-size: 12px; gap: 8px; }
+.birthday-overview-empty { color: var(--muted); font-size: 14px; }
+.birthday-overview-add { font-size: 14px; gap: 8px; }
 .birthday-overview-add>span { font-size: 23px; font-weight: 400; }
 .birthday-overview-person { display: flex; align-items: center; gap: 10px; min-width: 0; }
 .birthday-overview-person>div { min-width: 0; overflow-wrap: anywhere; }
@@ -118,9 +118,11 @@ tbody tr:hover { background: var(--surface-2); }
 .site-footer { display: flex; justify-content: space-between; gap: 16px; border-top: 1px solid var(--line); padding-top: 22px; color: var(--muted); font-size: 12px; }
 .site-footer>span:first-child { font-weight: 700; color: var(--ink); }
 .birthday-trigger { box-shadow: 0 5px 14px #1559e825; }
+.birthday-heading .close { flex: 0 0 44px; width: 44px; min-height: 44px; padding: 0; font-size: 26px; line-height: 1; color: var(--ink); background: var(--surface-2); border: 1px solid var(--line); }
+.birthday-save { font-size: 14px; }
 @media (max-width: 1200px) {
   .app { padding-inline: 26px; }.brand h1 { font-size: 34px; }.brand-sub { font-size: 14px; }
-  .header-actions { gap: 6px; }.header-actions .btn { font-size: 12px; padding-inline: 10px; }
+  .header-actions { gap: 6px; }.header-actions>.btn { font-size: 12px; padding-inline: 10px; }
   .config-bar { gap: 16px; padding: 16px; }.toggles { padding-left: 16px; gap: 10px; }
   .quick { gap: 20px; }.quick-main { padding: 22px; }
   .birthday-overview { grid-template-columns: 1fr; }.birthday-overview-add { justify-self: start; }.deadline-track { gap: 15px; }
@@ -140,7 +142,7 @@ tbody tr:hover { background: var(--surface-2); }
 }
 @media (max-width: 760px) {
   .app { padding: 24px 18px; }body::before, body::after { height: 1500px; }
-  .quick-main { padding: 24px; }.toggles { grid-template-columns: 1fr; gap: 12px; }.toggle { align-items: center; }.toggle-hint { font-size: 11px; }
+  .quick-main { padding: 24px; }.toggles { grid-template-columns: 1fr; gap: 12px; }.toggle { align-items: center; }
   .paper-product, .mechanical-calendar { width: min(100%, 500px); }.desk-scene { min-height: 350px; }
   .quick-overview { grid-template-columns: 1fr; }.birthday-overview { grid-template-columns: 1fr auto; }
   .deadline-track { flex-wrap: nowrap; }.deadline-track-line { order: 0; flex-basis: auto; }.desk-caption { margin-top: -4px; }
@@ -154,7 +156,7 @@ tbody tr:hover { background: var(--surface-2); }
 }
 @media (max-width: 450px) {
   .app { padding: 20px 14px; }.brand h1 { font-size: 30px; }.brand-sub { font-size: 12px; }
-  .header-actions { gap: 10px; }.header-actions .btn { font-size: 13px; }.config-bar { padding: 16px; }
+  .header-actions { gap: 10px; }.header-actions>.btn { font-size: 13px; }.config-bar { padding: 16px; }
   .start-field { grid-template-columns: 1fr; justify-content: stretch; }.start-field .field-note { grid-column: 1; }.start-field input { max-width: none; }
   .quick-main { padding: 22px 16px; }.panel-head h2 { font-size: 25px; }.tabs { gap: 5px; }.tab { font-size: 12px; }
   .presets { gap: 7px; }.chip { font-size: 15px; padding: 0; }.stepper { width: min(270px, 100%); }
