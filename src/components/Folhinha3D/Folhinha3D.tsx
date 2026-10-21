@@ -60,7 +60,7 @@ export function Folhinha3D(props: Folhinha3DProps) {
     // com folhas ainda no ar (cliques seguidos / botão segurado) a próxima vai mais rápido
     // no limite de 3 folhas no ar, a troca acontece por baixo delas (sem cortar animações)
     setLeaving((list) =>
-      list.length >= 3 ? list : [...list, { id, corner, duration: list.length ? 650 : 1150, props: last.props }],
+      list.length >= 3 ? list : [...list, { id, corner, duration: list.length ? 1000 : 1450, props: last.props }],
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);

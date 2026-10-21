@@ -6,7 +6,7 @@
 // continua plana (clip-path); a parte do lado de C vira a aba dobrada,
 // desenhada como o verso do papel refletido sobre a linha de dobra.
 // Sombras e brilho acompanham a dobra; no fim a folha se solta e sobe.
-import { useEffect, useRef, type ReactNode } from 'react';
+import { useLayoutEffect, useRef, type ReactNode } from 'react';
 
 type Vec = { x: number; y: number };
 type Corner = 'right' | 'left';
@@ -27,13 +27,8 @@ const smooth = (a: number, b: number, t: number) => {
   const x = clamp01((t - a) / (b - a));
   return x * x * (3 - 2 * x);
 };
-// "pega" curta e depois um puxão rápido que desacelera (sensação de peteleco)
-const GRAB = 0.14;
-const peelCurve = (t: number) => {
-  if (t < GRAB) return 0.05 * (t / GRAB) * (t / GRAB);
-  const x = (t - GRAB) / (1 - GRAB);
-  return 0.05 + 0.95 * (1 - Math.pow(1 - x, 3));
-};
+// A pega e a subida compartilham uma curva contínua, sem o tranco de um peteleco.
+const peelCurve = (t: number) => t * t * t * (t * (t * 6 - 15) + 10);
 
 /** Recorta o retângulo W×H pelo semiplano (X−M)·n ≥ 0 (Sutherland–Hodgman). */
 function clipRect(w: number, h: number, m: Vec, n: Vec, keepPositive: boolean): Vec[] {
@@ -76,8 +71,8 @@ function gradientOffset(w: number, h: number, v: Vec, m: Vec): { at: number } {
 function cornerPath(w: number, h: number, corner: Corner, t: number): Vec {
   const mirror = (x: number) => (corner === 'right' ? x : w - x);
   const p0 = { x: mirror(w), y: h };
-  const p1 = { x: mirror(w * 0.3), y: h * 0.52 };
-  const p2 = { x: mirror(w * 0.62), y: -h * 1.05 };
+  const p1 = { x: mirror(w * 0.94), y: h * 0.44 };
+  const p2 = { x: mirror(w * 0.86), y: -h * 1.08 };
   const u = 1 - t;
   return {
     x: u * u * p0.x + 2 * u * t * p1.x + t * t * p2.x,
@@ -85,7 +80,7 @@ function cornerPath(w: number, h: number, corner: Corner, t: number): Vec {
   };
 }
 
-export function PageCurl({ children, corner, duration = 720, onDone }: Props) {
+export function PageCurl({ children, corner, duration = 1450, onDone }: Props) {
   const rootRef = useRef<HTMLDivElement>(null);
   const frontRef = useRef<HTMLDivElement>(null);
   const foldShadeRef = useRef<HTMLDivElement>(null);
@@ -95,7 +90,7 @@ export function PageCurl({ children, corner, duration = 720, onDone }: Props) {
   const durationRef = useRef(duration);
   doneRef.current = onDone;
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const root = rootRef.current;
     const front = frontRef.current;
     const shade = foldShadeRef.current;
@@ -118,8 +113,8 @@ export function PageCurl({ children, corner, duration = 720, onDone }: Props) {
 
     const draw = (now: number) => {
       const raw = clamp01((now - t0) / durationRef.current);
-      // o canto é puxado nos primeiros 80%; a folha já começa a se soltar antes
-      const peel = peelCurve(clamp01(raw / 0.8));
+      // O canto sobe primeiro; a folha só se solta quando a dobra chega às argolas.
+      const peel = peelCurve(clamp01(raw / 0.94));
       const p = cornerPath(w, h, corner, Math.max(peel, 0.0001));
       const cp = sub(p, c);
       const dist = Math.hypot(cp.x, cp.y) || 0.0001;
@@ -157,18 +152,17 @@ export function PageCurl({ children, corner, duration = 720, onDone }: Props) {
         rgba(0,0,0,${(0.08 * lift).toFixed(3)}) ${g2 + 18}px,
         rgba(0,0,0,0) ${g2 + 46}px)`;
 
-      // soltar: sobe girando e some
-      const up = smooth(0.38, 1, raw);
-      const spin = corner === 'right' ? -1 : 1;
-      root.style.opacity = String(1 - smooth(0.84, 1, raw));
-      root.style.transform = `translateZ(${2 + up * 140}px) translateY(${-up * h * 1.25}px) translateX(${spin * up * 60}px) rotateX(${up * 36}deg) rotateZ(${spin * up * 24}deg)`;
+      // Soltar: mantém o eixo da folha e sobe, sem lançar o papel para o lado.
+      const up = smooth(0.72, 1, raw);
+      root.style.opacity = String(1 - smooth(0.88, 1, raw));
+      root.style.transform = `translate3d(0, ${-up * h * 0.6}px, 2px)`;
       root.style.setProperty('--flap-shadow', (0.1 + 0.22 * lift).toFixed(3));
 
       if (raw < 1) raf = requestAnimationFrame(draw);
       else doneRef.current();
     };
 
-    raf = requestAnimationFrame(draw);
+    draw(t0);
     return () => cancelAnimationFrame(raf);
   }, [corner]);
 
