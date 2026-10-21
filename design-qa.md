@@ -2,6 +2,16 @@
 
 final result: passed
 
+## Revisão adicional — saída da folha
+
+Corrigido o salto lateral ao começar a troca: a textura da fotografia recebia a inclinação da camada de texto pela segunda vez. A camada de textura agora compensa essa inclinação. O primeiro quadro da dobra é preparado antes da pintura.
+
+A saída perdeu a translação horizontal, a rotação lateral de 24 graus e o avanço de 140 px em profundidade. A dobra usa uma curva contínua, com saída vertical somente na fase final. Duração normal de 1,45 s e de 1 s nas trocas consecutivas.
+
+Evidências desta revisão: `../output/folhinha-review/motion/before-0.jpg` e `before-4.jpg` mostram a textura desalinhada e a folha lançada para o lado; `after-0.jpg`, `after-5.jpg` e `after-9.jpg` mostram alinhamento inicial, dobra e subida. As sequências têm viewports e datas diferentes; foram usadas para verificar o movimento, sem afirmar equivalência pixel a pixel entre elas.
+
+Validação adicional: 41 testes passaram, typecheck e build passaram. Quatro testes de regressão cobrem os dois cantos, a preparação do primeiro quadro, a permanência no eixo, a limpeza e o movimento reduzido. No navegador, trocas rápidas mantiveram no máximo três folhas e terminaram sem folhas pendentes; nenhum aviso/erro no console. Viewport de 390 px sem transbordamento horizontal durante a saída. Sem dependências novas. Não testado em aparelhos físicos nesta revisão.
+
 ## Escopo e fontes
 
 Refinamento da interface publicada, preservando a composição aprovada, os calendários fotográficos e os 12 atalhos. Esta revisão não afirma fidelidade pixel a pixel ao mockup conceitual nem certificação WCAG.

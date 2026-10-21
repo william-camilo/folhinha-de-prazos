@@ -4,7 +4,7 @@
  * - Assets do mesmo domínio: cache primeiro (nomes com hash são imutáveis)
  * - Google Fonts: stale-while-revalidate
  */
-const VERSION = 'v1.2.1-legibilidade';
+const VERSION = 'v1.2.2-folha-suave';
 const SHELL = `shell-${VERSION}`;
 const RUNTIME = `runtime-${VERSION}`;
 const BASE = new URL('./', self.location).href;

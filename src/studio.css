@@ -67,7 +67,9 @@ body::after { content: ''; position: absolute; inset: 0 0 auto; height: 1100px; 
 .page-month { font: 800 4cqw var(--body); letter-spacing: 0; }
 .page-month b { color: inherit; }
 .page-note { font-size: 2.2cqw; letter-spacing: .1em; font-weight: 500; color: #203459; padding-top: 2cqw; border-top: 1px solid #20345960; max-width: 85%; }
-.curl-front { background: url('./assets/paper-model.webp') 41.5% 48.4% / 124% 133%; }
+.curl-front { isolation: isolate; }
+/* A fotografia já tem perspectiva; neutraliza a inclinação extra da camada de texto. */
+.curl-front::before { content: ''; position: absolute; inset: 0; z-index: -1; transform: skewX(2.6deg); background: url('./assets/paper-model.webp') 41.5% 48.4% / 124% 133%; }
 .curl-ghost { background: transparent; }
 .mechanical-calendar { padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
 .mechanical-digits, .mechanical-bottom { display: block; position: absolute; inset: 0; margin: 0; pointer-events: none; }
