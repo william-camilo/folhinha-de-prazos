@@ -4,6 +4,7 @@ import { createRoot } from 'react-dom/client';
 import App from './App';
 import { registerSW } from './pwa/registerSW';
 import './styles.css';
+import './desk.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

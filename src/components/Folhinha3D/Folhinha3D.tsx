@@ -40,7 +40,7 @@ export type Folhinha3DProps = PageProps & { label: string };
 const SHEETS = 7;
 
 export function Folhinha3D(props: Folhinha3DProps) {
-  const stageRef = useTilt<HTMLDivElement>(16);
+  const stageRef = useTilt<HTMLDivElement>(6);
   const key = dateKey(props.date);
   const prev = useRef<{ key: string; props: PageProps } | null>(null);
   // folhas saindo (até 3 ao mesmo tempo quando a data muda rápido)
@@ -54,13 +54,17 @@ export function Folhinha3D(props: Folhinha3DProps) {
     const last = prev.current;
     prev.current = { key, props: { ...props } };
     if (!last || last.key === key) return;
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+      setLeaving([]);
+      return;
+    }
     const id = ++seq.current;
     // avançar a data puxa o canto direito; voltar, o esquerdo
     const corner = props.date.getTime() >= last.props.date.getTime() ? 'right' : 'left';
     // com folhas ainda no ar (cliques seguidos / botão segurado) a próxima vai mais rápido
     // no limite de 3 folhas no ar, a troca acontece por baixo delas (sem cortar animações)
     setLeaving((list) =>
-      list.length >= 3 ? list : [...list, { id, corner, duration: list.length ? 460 : 720, props: last.props }],
+      list.length >= 3 ? list : [...list, { id, corner, duration: list.length ? 650 : 1150, props: last.props }],
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);
@@ -75,6 +79,7 @@ export function Folhinha3D(props: Folhinha3DProps) {
   return (
     <div className="folhinha-stage" ref={stageRef} role="img" aria-label={props.label}>
       <div className="folhinha">
+        <div className="desk-stand" aria-hidden="true" />
         {Array.from({ length: SHEETS }, (_, i) => (
           <div key={i} className="sheet" style={{ '--i': i + 1 } as CSSProperties} aria-hidden="true" />
         ))}

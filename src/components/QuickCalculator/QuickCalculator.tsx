@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { useDateContext, type CalcMode } from '../../context/DateContext';
 import { calculateDeadline, countBetween } from '../../utils/calculator';
 import { formatDateBR, formatLong, formatShort, getDayOfWeekShort, parseISODate, plural, toISODate } from '../../utils/format';
-import { Folhinha3D } from '../Folhinha3D/Folhinha3D';
+import { CalendarDisplay } from '../Folhinha3D/CalendarDisplay';
 import { DayTimeline } from '../DayTimeline/DayTimeline';
 import { useAutoRepeat } from '../../hooks/useAutoRepeat';
 
@@ -183,7 +183,7 @@ export function QuickCalculator() {
       </div>
 
       <div className="quick-visual">
-        <Folhinha3D
+        <CalendarDisplay
           date={shownDate}
           redDay={!!shownHoliday || shownDate.getDay() === 0}
           holidayName={shownHoliday?.name}

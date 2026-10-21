@@ -4,7 +4,7 @@
  * - Assets do mesmo domínio: cache primeiro (nomes com hash são imutáveis)
  * - Google Fonts: stale-while-revalidate
  */
-const VERSION = 'v1.0.0';
+const VERSION = 'v1.1.0-desk';
 const SHELL = `shell-${VERSION}`;
 const RUNTIME = `runtime-${VERSION}`;
 const BASE = new URL('./', self.location).href;
@@ -20,6 +20,8 @@ self.addEventListener('install', (event) => {
         const html = await (await fetch('./index.html', { cache: 'no-cache' })).text();
         const assets = [...html.matchAll(/(?:src|href)="(\.?\/?assets\/[^"]+)"/g)].map((m) => m[1]);
         await cache.addAll([...new Set(assets)]);
+        const manifest = await fetch('./precache.json', { cache: 'no-cache' });
+        if (manifest.ok) await cache.addAll(await manifest.json());
       } catch (e) {
         /* segue sem os assets; serão cacheados no primeiro uso */
       }
@@ -79,7 +81,8 @@ self.addEventListener('fetch', (event) => {
   if (url.href.startsWith(BASE) && !url.pathname.includes('/api/')) {
     event.respondWith(
       (async () => {
-        const cached = await caches.match(request);
+        // Bundles com hash são públicos e idênticos com ou sem o Origin de um import().
+        const cached = await caches.match(request, { ignoreVary: url.pathname.includes('/assets/') });
         if (cached) return cached;
         const res = await fetch(request);
         if (res.ok) (await caches.open(RUNTIME)).put(request, res.clone());

@@ -1729,7 +1729,7 @@ td.weekday {
 .bday-remove:hover { color: var(--red); }
 
 /* Tema escuro */
-[data-theme="dark"] .bday-modal,
+[data-theme="dark"] .bday-modal { box-shadow: 0 8px 32px rgba(0,0,0,.45); }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .bday-modal {
     box-shadow: 0 8px 32px rgba(0,0,0,.45);

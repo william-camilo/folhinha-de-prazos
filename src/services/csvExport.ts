@@ -1,6 +1,5 @@
 // src/services/csvExport.ts
 // Geração de CSV com papaparse e download via Blob.
-import Papa from 'papaparse';
 import type { TermRow } from '../utils/calculator';
 import type { Holiday } from '../utils/holidays';
 import { formatDateBR, getDayOfWeekName, toISODate } from '../utils/format';
@@ -14,7 +13,8 @@ export const canDownload = import.meta.env.VITE_NO_DOWNLOAD !== 'true';
  * - excel: separador ";" e BOM UTF-8 (abre direto no Excel pt-BR).
  * - datastudio: separador "," e datas ISO (Looker Studio / Google Sheets).
  */
-export function toCSV(rows: Record<string, string | number>[], flavor: CsvFlavor = 'excel'): string {
+export async function toCSV(rows: Record<string, string | number>[], flavor: CsvFlavor = 'excel'): Promise<string> {
+  const { default: Papa } = await import('papaparse');
   const csv = Papa.unparse(rows, { delimiter: flavor === 'excel' ? ';' : ',', newline: '\r\n' });
   return flavor === 'excel' ? '﻿' + csv : csv;
 }

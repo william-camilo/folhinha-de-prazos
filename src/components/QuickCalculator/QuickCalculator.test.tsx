@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { DateProvider, createInitialState } from '../../context/DateContext';
 import { QuickCalculator } from './QuickCalculator';
@@ -14,6 +14,22 @@ function setup() {
 }
 
 describe('<QuickCalculator />', () => {
+  it('preserva os 12 prazos ao trocar o modelo e salva a preferência', async () => {
+    localStorage.removeItem('folhinha-prazos:calendar-model');
+    setup();
+    const user = userEvent.setup();
+    const result = screen.getByTestId('result-date').textContent;
+    expect(within(screen.getByRole('group', { name: 'Prazos comuns' })).getAllByRole('button').map(b => b.textContent))
+      .toEqual(['5', '10', '15', '20', '25', '30', '45', '50', '60', '80', '100', '120']);
+    await user.click(screen.getByRole('button', { name: 'Modelo mecânico' }));
+    expect(screen.getByRole('button', { name: 'Modelo mecânico' })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByTestId('result-date').textContent).toBe(result);
+    expect(localStorage.getItem('folhinha-prazos:calendar-model')).toBe('mechanical');
+    await user.click(screen.getByRole('button', { name: '20' }));
+    expect(screen.getByRole('img', { name: /Vencimento:/ })).toHaveAccessibleName(/21 de outubro de 2026/);
+    await user.click(screen.getByRole('button', { name: 'Modelo de folha' }));
+    expect(localStorage.getItem('folhinha-prazos:calendar-model')).toBe('paper');
+  });
   it('mostra o vencimento em dias úteis', () => {
     setup();
     expect(screen.getByTestId('result-date')).toHaveTextContent('14 de outubro de 2026');
