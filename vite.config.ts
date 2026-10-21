@@ -37,8 +37,10 @@ function holidaysApiPlugin(): Plugin {
         res.end(holidaysCsv(from, Math.min(to, from + 50)));
       });
     },
-    generateBundle() {
+    generateBundle(_options, bundle) {
       this.emitFile({ type: 'asset', fileName: 'api/holidays.csv', source: holidaysCsv(now - 1, now + 5) });
+      // Inclui o exportador carregado sob demanda e o cenário no uso offline.
+      this.emitFile({ type: 'asset', fileName: 'precache.json', source: JSON.stringify(Object.keys(bundle).filter(name => name.startsWith('assets/'))) });
     },
   };
 }

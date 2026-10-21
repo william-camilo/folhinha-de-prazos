@@ -29,11 +29,11 @@ function save(list: Birthday[]) {
 /** Quantos dias faltam para o próximo aniversário a partir de hoje. */
 export function daysUntilBirthday(monthDay: string, today = new Date()): number {
   const [m, d] = monthDay.split('-').map(Number);
-  const thisYear = new Date(today.getFullYear(), m - 1, d);
-  const nextYear = new Date(today.getFullYear() + 1, m - 1, d);
-  const target = thisYear >= today ? thisYear : nextYear;
-  const diff = target.getTime() - new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
-  return Math.round(diff / 86_400_000);
+  // UTC representa os dias locais sem deixar horário ou mudanças de fuso interferirem.
+  const start = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate());
+  const thisYear = Date.UTC(today.getFullYear(), m - 1, d);
+  const target = thisYear >= start ? thisYear : Date.UTC(today.getFullYear() + 1, m - 1, d);
+  return (target - start) / 86_400_000;
 }
 
 /** Urgência: 0=hoje, 1=amanhã/1 dia, 7=até 7 dias, 30=até 30 dias, 999=mais distante */

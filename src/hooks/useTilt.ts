@@ -24,6 +24,7 @@ export function useTilt<T extends HTMLElement>(maxDeg = 14) {
     };
 
     const onMove = (e: PointerEvent) => {
+      if (e.pointerType === 'touch') return;
       const r = el.getBoundingClientRect();
       const px = (e.clientX - r.left) / r.width; // 0..1
       const py = (e.clientY - r.top) / r.height;
@@ -31,6 +32,7 @@ export function useTilt<T extends HTMLElement>(maxDeg = 14) {
       el.dataset.active = 'true';
     };
     const onLeave = () => {
+      cancelAnimationFrame(frame);
       el.style.removeProperty('--rx');
       el.style.removeProperty('--ry');
       el.style.removeProperty('--gx');

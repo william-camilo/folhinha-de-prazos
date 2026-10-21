@@ -144,9 +144,10 @@ export function HolidaysModal() {
           <button
             type="button"
             className="btn btn-quiet"
-            onClick={async () =>
-              say((await copyText(toCSV(holidaysToRecords(holidays, 'datastudio'), 'datastudio'))) ? 'CSV copiado' : 'Não foi possível copiar')
-            }
+            onClick={async () => {
+              try { say((await copyText(await toCSV(holidaysToRecords(holidays, 'datastudio'), 'datastudio'))) ? 'CSV copiado' : 'Não foi possível copiar'); }
+              catch { say('Não foi possível gerar o CSV. Tente novamente.'); }
+            }}
           >
             Copiar CSV
           </button>
@@ -155,9 +156,11 @@ export function HolidaysModal() {
               <button
                 type="button"
                 className="btn btn-ghost"
-                onClick={() => {
-                  downloadCSV(`feriados-${year}.csv`, toCSV(holidaysToRecords(holidays, 'datastudio'), 'datastudio'));
-                  say('Download iniciado');
+                onClick={async () => {
+                  try {
+                    downloadCSV(`feriados-${year}.csv`, await toCSV(holidaysToRecords(holidays, 'datastudio'), 'datastudio'));
+                    say('Download iniciado');
+                  } catch { say('Não foi possível gerar o CSV. Tente novamente.'); }
                 }}
               >
                 CSV p/ Looker Studio
@@ -165,9 +168,11 @@ export function HolidaysModal() {
               <button
                 type="button"
                 className="btn btn-ghost"
-                onClick={() => {
-                  downloadCSV(`feriados-${year}-excel.csv`, toCSV(holidaysToRecords(holidays, 'excel'), 'excel'));
-                  say('Download iniciado');
+                onClick={async () => {
+                  try {
+                    downloadCSV(`feriados-${year}-excel.csv`, await toCSV(holidaysToRecords(holidays, 'excel'), 'excel'));
+                    say('Download iniciado');
+                  } catch { say('Não foi possível gerar o CSV. Tente novamente.'); }
                 }}
               >
                 CSV p/ Excel

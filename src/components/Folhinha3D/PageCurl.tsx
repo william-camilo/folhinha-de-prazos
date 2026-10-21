@@ -158,10 +158,10 @@ export function PageCurl({ children, corner, duration = 720, onDone }: Props) {
         rgba(0,0,0,0) ${g2 + 46}px)`;
 
       // soltar: sobe girando e some
-      const up = smooth(0.5, 1, raw);
+      const up = smooth(0.38, 1, raw);
       const spin = corner === 'right' ? -1 : 1;
-      root.style.opacity = String(1 - smooth(0.68, 1, raw));
-      root.style.transform = `translateZ(${2 + up * 70}px) translateY(${-up * 95}px) translateX(${spin * up * 18}px) rotateX(${up * 22}deg) rotateZ(${spin * up * 14}deg)`;
+      root.style.opacity = String(1 - smooth(0.84, 1, raw));
+      root.style.transform = `translateZ(${2 + up * 140}px) translateY(${-up * h * 1.25}px) translateX(${spin * up * 60}px) rotateX(${up * 36}deg) rotateZ(${spin * up * 24}deg)`;
       root.style.setProperty('--flap-shadow', (0.1 + 0.22 * lift).toFixed(3));
 
       if (raw < 1) raf = requestAnimationFrame(draw);

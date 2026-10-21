@@ -21,11 +21,13 @@ export function Confetti({ active }: { active: boolean }) {
   const fired = useRef(false);
 
   useEffect(() => {
-    if (!active || fired.current) return;
+    if (!active || fired.current || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
     fired.current = true;
 
     const canvas = canvasRef.current!;
-    const ctx = canvas.getContext('2d')!;
+    const context = canvas.getContext('2d');
+    if (!context) return;
+    const ctx = context;
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
@@ -81,7 +83,7 @@ export function Confetti({ active }: { active: boolean }) {
     }
 
     raf = requestAnimationFrame(draw);
-    return () => cancelAnimationFrame(raf);
+    return () => { cancelAnimationFrame(raf); fired.current = false; };
   }, [active]);
 
   if (!active) return null;

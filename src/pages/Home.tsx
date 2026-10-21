@@ -27,6 +27,7 @@ export function Home() {
       <main className="layout">
         <ConfigurationBar />
         <QuickCalculator />
+        <div className="section-heading"><div><p className="section-eyebrow">CONSULTA RÁPIDA</p><h2>Seus prazos, lado a lado.</h2></div><p>Escolha um prazo nas tabelas para atualizar o calendário.</p></div>
         <div className="tables">
           <BusinessDaysTable />
           <CalendarDaysTable />
@@ -35,6 +36,7 @@ export function Home() {
           Considera feriados nacionais e os locais que você adicionar. Suspensões de expediente, recesso forense
           (20/12 a 20/01) e feriados forenses de cada tribunal não entram no cálculo — confira sempre no tribunal.
         </p>
+        <footer className="site-footer"><span>Folhinha de Prazos</span><span>Mais clareza para organizar seus dias.</span></footer>
       </main>
       <HolidaysModal />
     </div>

@@ -39,7 +39,10 @@ export function DeadlineTable({ mode, title, description }: Props) {
           <button
             type="button"
             className="btn btn-quiet"
-            onClick={async () => say((await copyText(csv())) ? 'CSV copiado' : 'Não foi possível copiar')}
+            onClick={async () => {
+              try { say((await copyText(await csv())) ? 'CSV copiado' : 'Não foi possível copiar'); }
+              catch { say('Não foi possível gerar o CSV. Tente novamente.'); }
+            }}
           >
             {canDownload ? 'Copiar' : 'Copiar CSV'}
           </button>
@@ -47,9 +50,9 @@ export function DeadlineTable({ mode, title, description }: Props) {
             <button
               type="button"
               className="btn btn-ghost"
-              onClick={() => {
-                downloadCSV(filename, csv());
-                say('Download iniciado');
+              onClick={async () => {
+                try { downloadCSV(filename, await csv()); say('Download iniciado'); }
+                catch { say('Não foi possível gerar o CSV. Tente novamente.'); }
               }}
             >
               Baixar CSV
